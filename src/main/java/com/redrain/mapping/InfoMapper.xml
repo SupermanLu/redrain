@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redrain.dao.InfoMapper">
+  <resultMap id="BaseResultMap" type="com.redrain.model.Info">
+    <id column="infoid" jdbcType="VARCHAR" property="infoid" />
+    <result column="infotime" jdbcType="TIMESTAMP" property="infotime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.redrain.model.Info">
+    <result column="infocontent" jdbcType="LONGVARCHAR" property="infocontent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    infoid, infotime, updatetime
+  </sql>
+  <sql id="Blob_Column_List">
+    infocontent
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from info
+    where infoid = #{infoid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectList" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from info
+    where infocontent like binary '%${search}%' or infotime like binary '%${search}%'
+    order by infotime desc
+    limit #{limit,jdbcType=INTEGER} offset #{offset,jdbcType=INTEGER}
+  </select>
+  <select id="selectCount" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from info
+    where infocontent like binary '%${search}%' or infotime like binary '%${search}%'
+    order by infotime desc
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from info
+    where infoid = #{infoid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.redrain.model.Info">
+    insert into info (infoid, infotime, updatetime, 
+      infocontent)
+    values (#{infoid,jdbcType=VARCHAR}, #{infotime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{infocontent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.redrain.model.Info">
+    insert into info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="infoid != null">
+        infoid,
+      </if>
+      <if test="infotime != null">
+        infotime,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="infocontent != null">
+        infocontent,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="infoid != null">
+        #{infoid,jdbcType=VARCHAR},
+      </if>
+      <if test="infotime != null">
+        #{infotime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="infocontent != null">
+        #{infocontent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redrain.model.Info">
+    update info
+    <set>
+      <if test="infotime != null">
+        infotime = #{infotime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="infocontent != null">
+        infocontent = #{infocontent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where infoid = #{infoid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.redrain.model.Info">
+    update info
+    set infotime = #{infotime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      infocontent = #{infocontent,jdbcType=LONGVARCHAR}
+    where infoid = #{infoid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redrain.model.Info">
+    update info
+    set infotime = #{infotime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where infoid = #{infoid,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redrain.dao.LbMapper">
+  <resultMap id="BaseResultMap" type="com.redrain.model.Lb">
+    <id column="lbid" jdbcType="INTEGER" property="lbid" />
+    <result column="lbname" jdbcType="VARCHAR" property="lbname" />
+    <result column="lbmoney" jdbcType="VARCHAR" property="lbmoney" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    lbid, lbname, lbmoney
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lb
+    where lbid = #{lbid,jdbcType=INTEGER}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lb
+    where lbname like binary '%${search}%'
+    limit #{limit,jdbcType=INTEGER} offset #{offset,jdbcType=INTEGER}
+  </select>
+  <select id="selectCount" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lb
+    where lbname like binary '%${search}%'
+  </select>
+  
+  <select id="selectAllList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lb
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from lb
+    where lbid = #{lbid,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteAllLb">
+    delete from lb
+  </delete>
+  <insert id="insert" parameterType="com.redrain.model.Lb">
+    insert into lb (lbid, lbname, lbmoney
+      )
+    values (#{lbid,jdbcType=INTEGER}, #{lbname,jdbcType=VARCHAR}, #{lbmoney,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.redrain.model.Lb">
+    insert into lb
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lbid != null">
+        lbid,
+      </if>
+      <if test="lbname != null">
+        lbname,
+      </if>
+      <if test="lbmoney != null">
+        lbmoney,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lbid != null">
+        #{lbid,jdbcType=INTEGER},
+      </if>
+      <if test="lbname != null">
+        #{lbname,jdbcType=VARCHAR},
+      </if>
+      <if test="lbmoney != null">
+        #{lbmoney,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redrain.model.Lb">
+    update lb
+    <set>
+      <if test="lbname != null">
+        lbname = #{lbname,jdbcType=VARCHAR},
+      </if>
+      <if test="lbmoney != null">
+        lbmoney = #{lbmoney,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where lbid = #{lbid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redrain.model.Lb">
+    update lb
+    set lbname = #{lbname,jdbcType=VARCHAR},
+      lbmoney = #{lbmoney,jdbcType=VARCHAR}
+    where lbid = #{lbid,jdbcType=INTEGER}
+  </update>
+</mapper>

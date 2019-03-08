@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redrain.dao.ThrowMapper">
+  <resultMap id="BaseResultMap" type="com.redrain.model.Throw">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="message" jdbcType="VARCHAR" property="message" />
+    <result column="throwtime" jdbcType="TIMESTAMP" property="throwtime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userid, message, throwtime, status
+  </sql>
+  <sql id="Base_Column_List1">
+    id, username, message, throwtime, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from throw
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+   <select id="selectList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List1" />
+    from throw inner join user on user.userid=throw.userid
+    where throwtime like binary '%${search}%' or username like binary '%${search}%' or message like binary '%${search}%'
+    order by throwtime desc
+    limit #{limit,jdbcType=INTEGER} offset #{offset,jdbcType=INTEGER}
+  </select>
+  <select id="selectCount" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List1" />
+    from throw inner join user on user.userid=throw.userid
+    where throwtime like binary '%${search}%' or username like binary '%${search}%' or message like binary '%${search}%'
+    order by throwtime desc
+  </select>
+  
+   <select id="selectTodayCount" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from throw
+    where userid=#{userid,jdbcType=INTEGER} and throwtime like binary '%${search}%'
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from throw
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="delete">
+    delete from throw
+  </delete>
+  
+  <insert id="insert" parameterType="com.redrain.model.Throw">
+    insert into throw (id, userid, message, 
+      throwtime, status)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{message,jdbcType=VARCHAR}, 
+      #{throwtime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.redrain.model.Throw">
+    insert into throw
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="message != null">
+        message,
+      </if>
+      <if test="throwtime != null">
+        throwtime,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="message != null">
+        #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="throwtime != null">
+        #{throwtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redrain.model.Throw">
+    update throw
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="message != null">
+        message = #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="throwtime != null">
+        throwtime = #{throwtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="finish">
+    update throw set status='1'
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.redrain.model.Throw">
+    update throw
+    set userid = #{userid,jdbcType=INTEGER},
+      message = #{message,jdbcType=VARCHAR},
+      throwtime = #{throwtime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
